@@ -10,7 +10,15 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C > 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Args={};local Edx=0;local Limit=A+Inst[OP_B]-1;for Idx=A+1,Limit do Edx=Edx+1;Args[Edx]=Stk[Idx];end;local Results={Stk[A](Unpack(Args,1,Limit-A))};local Limit=A+Inst[OP_C]-2;Edx=0;for Idx=A,Limit do Edx=Edx+1;Stk[Idx]=Results[Edx];end;Top=Limit;";
+			@"
+local A = Inst[OP_A]
+local Results = { Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1)) };
+local Edx = 0;
+for Idx = A, A + Inst[OP_C] - 2 do 
+	Edx = Edx + 1;
+	Stk[Idx] = Results[Edx];
+end
+";
 	}
 	
 	public class OpCallB0 : VOpcode
@@ -20,9 +28,17 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C > 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Args={};local Edx=0;local Limit=Top;for Idx=A+1,Limit do Edx=Edx+1;Args[Edx]=Stk[Idx];end;local Results={Stk[A](Unpack(Args,1,Limit-A))};local Limit=A+Inst[OP_C]-2;Edx=0;for Idx=A,Limit do Edx=Edx+1;Stk[Idx]=Results[Edx];end;Top=Limit;";
+			@"
+local A = Inst[OP_A]
+local Results = { Stk[A](Unpack(Stk, A + 1, Top)) };
+local Edx = 0;
+for Idx = A, A + Inst[OP_C] - 2 do 
+	Edx = Edx + 1;
+	Stk[Idx] = Results[Edx];
+end
+";
 	}
-	
+
 	public class OpCallB1 : VOpcode
 	{
 		public override bool IsInstruction(Instruction instruction) =>
@@ -30,7 +46,16 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C > 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Results,Limit={Stk[A]()};local Limit=A+Inst[OP_C]-2;local Edx=0;for Idx=A,Limit do Edx=Edx+1;Stk[Idx]=Results[Edx];end;Top=Limit;";
+			@"
+local A = Inst[OP_A]
+local Results = { Stk[A]() };
+local Limit = A + Inst[OP_C] - 2;
+local Edx = 0;
+for Idx = A, Limit do 
+	Edx = Edx + 1;
+	Stk[Idx] = Results[Edx];
+end
+";
 	}
 	
 	public class OpCallC0 : VOpcode
@@ -40,7 +65,16 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C == 0;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Args={};local Edx=0;local Limit=A+Inst[OP_B]-1;for Idx=A+1,Limit do Edx=Edx+1;Args[Edx]=Stk[Idx];end;local Results,Limit=_R(Stk[A](Unpack(Args,1,Limit-A)));Limit=Limit+A-1;Edx=0;for Idx=A,Limit do Edx=Edx+1;Stk[Idx]=Results[Edx];end;Top=Limit;";
+			@"
+local A = Inst[OP_A]
+local Results, Limit = _R(Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1)))
+Top = Limit + A - 1
+local Edx = 0;
+for Idx = A, Top do 
+	Edx = Edx + 1;
+	Stk[Idx] = Results[Edx];
+end;
+";
 	}
 	
 	public class OpCallC1 : VOpcode
@@ -50,7 +84,10 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C == 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Args={};local Edx=0;local Limit=A+Inst[OP_B]-1;for Idx=A+1,Limit do Edx=Edx+1;Args[Edx]=Stk[Idx];end;Stk[A](Unpack(Args,1,Limit-A));Top=A;";
+			@"
+local A = Inst[OP_A]
+Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1))
+";
 	}
 	
 	public class OpCallB0C0 : VOpcode
@@ -60,7 +97,16 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C == 0;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Args={};local Edx=0;local Limit=Top;for Idx=A+1,Limit do Edx=Edx+1;Args[Edx]=Stk[Idx];end;local Results,Limit=_R(Stk[A](Unpack(Args,1,Limit-A)));Limit=Limit+A-1;Edx=0;for Idx=A,Limit do Edx=Edx+1;Stk[Idx]=Results[Edx];end;Top=Limit;";
+			@"
+local A = Inst[OP_A]
+local Results, Limit = _R(Stk[A](Unpack(Stk, A + 1, Top)))
+Top = Limit + A - 1
+local Edx = 0;
+for Idx = A, Top do 
+	Edx = Edx + 1;
+	Stk[Idx] = Results[Edx];
+end;
+";
 	}
 	
 	public class OpCallB0C1 : VOpcode
@@ -70,7 +116,10 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C == 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Args={};local Edx=0;local Limit=Top;for Idx=A+1,Limit do Edx=Edx+1;Args[Edx]=Stk[Idx];end;Stk[A](Unpack(Args,1,Limit-A));Top=A;";
+			@"
+local A = Inst[OP_A]
+Stk[A](Unpack(Stk, A + 1, Top))
+";
 	}
 	
 	public class OpCallB1C0 : VOpcode
@@ -80,7 +129,16 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C == 0;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Results,Limit=_R(Stk[A]());Top=A-1;Limit=Limit+A-1;local Edx=0;for Idx=A,Limit do Edx=Edx+1;Stk[Idx]=Results[Edx];end;Top=Limit;";
+			@"
+local A = Inst[OP_A]
+local Results, Limit = _R(Stk[A]())
+Top = Limit + A - 1
+local Edx = 0;
+for Idx = A, Top do 
+	Edx = Edx + 1;
+	Stk[Idx] = Results[Edx];
+end;
+";
 	}
 	
 	public class OpCallB1C1 : VOpcode
@@ -90,6 +148,6 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.C == 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"Stk[Inst[OP_A]]();Top=A;";
+			"Stk[Inst[OP_A]]();";
 	}
 }

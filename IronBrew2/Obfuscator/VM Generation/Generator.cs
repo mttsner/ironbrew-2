@@ -415,6 +415,7 @@ local Byte         = string.byte;
 local Char         = string.char;
 local Sub          = string.sub;
 local Concat       = table.concat;
+local Insert       = table.insert;
 local LDExp        = math.ldexp;
 local GetFEnv      = getfenv or function() return _ENV end;
 local Setmetatable = setmetatable;
@@ -468,7 +469,7 @@ local ToNumber = tonumber;";
 						vm +=
 							$@"
 								local ConstCount = gBits32()
-    							local Consts = {{{string.Join(",", Enumerable.Repeat(0, maxConstants).Select(x => "0"))}}};
+    							local Consts = {{}}
 
 								for Idx=1,ConstCount do 
 									local Type=gBits8();
@@ -535,8 +536,6 @@ local ToNumber = tonumber;";
 			}
 			
 			ComputeFuncs(_context.HeadChunk);
-			
-			vm = vm.Replace("FUNC_CNT", string.Join(",", Enumerable.Repeat(0, maxFunc).Select(x => "0")));
 
 			int maxInstrs = 0;
 
@@ -550,8 +549,6 @@ local ToNumber = tonumber;";
 			}
 			
 			ComputeInstrs(_context.HeadChunk);
-			
-			vm = vm.Replace("INSTR_CNT", string.Join(",", Enumerable.Repeat(0, maxInstrs).Select(x => "0")));
 			
 			string GetStr(List<int> opcodes)
 			{
@@ -597,9 +594,8 @@ local ToNumber = tonumber;";
 			vm = vm.Replace("OP_ENUM", "1")
 				.Replace("OP_A", "2")
 				.Replace("OP_B", "3")
-				.Replace("OP_BX", "4")
-				.Replace("OP_C", "5")
-				.Replace("OP_DATA", "6");
+				.Replace("OP_C", "4")
+				.Replace("OP_DATA", "5");
 
 			
 			return vm;

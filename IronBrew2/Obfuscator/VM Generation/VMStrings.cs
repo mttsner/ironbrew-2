@@ -22,11 +22,9 @@ end
 local function gBit(Bit, Start, End)
 	if End then
 		local Res = (Bit / 2 ^ (Start - 1)) % 2 ^ ((End - 1) - (Start - 1) + 1);
-
 		return Res - Res % 1;
 	else
 		local Plc = 2 ^ (Start - 1);
-
         return (Bit % (Plc + Plc) >= Plc) and 1 or 0;
 	end;
 end;
@@ -97,8 +95,8 @@ local gInt = gBits32;
 local function _R(...) return {...}, Select('#', ...) end
 
 local function Deserialize()
-    local Instrs = { INSTR_CNT };
-    local Functions = { FUNC_CNT };
+    local Instrs = {};
+    local Functions = {};
 	local Lines = {};
     local Chunk = 
 	{

@@ -9,7 +9,10 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.OpCode == Opcode.Return && instruction.B > 1;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Limit=A+Inst[OP_B]-2;local Output={};local Edx=0;for Idx=A,Limit do Edx=Edx+1;Output[Edx]=Stk[Idx];end; do return Unpack(Output,1,Edx) end;";
+			@"
+local A = Inst[OP_A];
+do return Unpack(Stk, A, A + Inst[OP_B] - 1) end;
+";
 	}
 	
 	public class OpReturnB0 : VOpcode
@@ -18,7 +21,9 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.OpCode == Opcode.Return && instruction.B == 0;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"local A=Inst[OP_A];local Limit=Top;local Output={};local Edx=0;for Idx=A,Limit do Edx=Edx+1;Output[Edx]=Stk[Idx];end;do return Unpack(Output,1,Edx) end;";
+			@"
+local A = Inst[OP_A]; 
+do return Unpack(Stk, A, Top) end;";
 	}
 	
 	public class OpReturnB1 : VOpcode

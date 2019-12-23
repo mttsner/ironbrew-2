@@ -14,7 +14,6 @@ namespace IronBrew2.Bytecode_Library.IR
 		ABx,
 		AsBx,
 		AsBxC,
-		sAxBC,
 		Data
 	}
 }
