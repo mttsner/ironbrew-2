@@ -6,12 +6,40 @@ namespace IronBrew2.Obfuscator.Opcodes
 	public class OpReturn : VOpcode
 	{
 		public override bool IsInstruction(Instruction instruction) =>
-			instruction.OpCode == Opcode.Return && instruction.B > 1;
+			instruction.OpCode == Opcode.Return && instruction.B > 3;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
 			@"
 local A = Inst[OP_A];
-do return Unpack(Stk, A, A + Inst[OP_B] - 1) end;
+do return Unpack(Stk, A, A + Inst[OP_B]) end;
+";
+
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B -= 2;
+		}
+	}
+	
+	public class OpReturnB2 : VOpcode
+	{
+		public override bool IsInstruction(Instruction instruction) =>
+			instruction.OpCode == Opcode.Return && instruction.B == 2;
+
+		public override string GetObfuscated(ObfuscationContext context) =>
+			@"
+do return Stk[Inst[OP_A]] end
+";
+	}
+	
+	public class OpReturnB3 : VOpcode
+	{
+		public override bool IsInstruction(Instruction instruction) =>
+			instruction.OpCode == Opcode.Return && instruction.B == 3;
+
+		public override string GetObfuscated(ObfuscationContext context) =>
+			@"
+local A = Inst[OP_A]; 
+do return Stk[A], Stk[A + 1] end
 ";
 	}
 	

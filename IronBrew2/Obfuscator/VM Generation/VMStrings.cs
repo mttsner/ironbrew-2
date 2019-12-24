@@ -49,6 +49,16 @@ local function gBits8()
     return F;
 end;
 
+local function gBits16()
+    local W, X = Byte(ByteString, Pos, Pos + 2);
+
+	W = BitXOR(W, XOR_KEY)
+	X = BitXOR(X, XOR_KEY)
+
+    Pos	= Pos + 2;
+    return (X*256) + W;
+end;
+
 local function gFloat()
 	local Left = gBits32();
 	local Right = gBits32();
@@ -101,22 +111,34 @@ local function Deserialize()
     local Chunk = 
 	{
 		Instrs,
-		nil,
 		Functions,
 		nil,
 		Lines
-	};";
+	};
+	local ConstCount = gBits32()
+    local Consts = {}
+
+	for Idx=1, ConstCount do 
+		local Type =gBits8();
+		local Cons;
+	
+		if(Type==CONST_BOOL) then Cons = (gBits8() ~= 0);
+		elseif(Type==CONST_FLOAT) then Cons = gFloat();
+		elseif(Type==CONST_STRING) then Cons = gString();
+		end;
+		
+		Consts[Idx] = Cons;
+	end;
+";
 		
 		public static string VMP2 = @"
 local function Wrap(Chunk, Upvalues, Env)
 	local Instr  = Chunk[1];
-	local Const  = Chunk[2];
-	local Proto  = Chunk[3];
-	local Params = Chunk[4];
+	local Proto  = Chunk[2];
+	local Params = Chunk[3];
 
 	return function(...)
 		local Instr  = Instr; 
-		local Const  = Const; 
 		local Proto  = Proto; 
 		local Params = Params;
 
@@ -160,9 +182,8 @@ return Wrap(Deserialize(), {}, GetFEnv())();
 local PCall = pcall
 local function Wrap(Chunk, Upvalues, Env)
 	local Instr = Chunk[1];
-	local Const = Chunk[2];
-	local Proto = Chunk[3];
-	local Params = Chunk[4];
+	local Proto = Chunk[2];
+	local Params = Chunk[3];
 
 	return function(...)
 		local InstrPoint = 1;

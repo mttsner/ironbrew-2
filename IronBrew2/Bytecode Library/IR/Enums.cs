@@ -1,3 +1,5 @@
+using System;
+
 namespace IronBrew2.Bytecode_Library.IR
 {
 	public enum ConstantType
@@ -15,5 +17,14 @@ namespace IronBrew2.Bytecode_Library.IR
 		AsBx,
 		AsBxC,
 		Data
+	}
+
+	[Flags]
+	public enum InstructionConstantMask
+	{
+		NK = 0,
+		RA = 1,
+		RB = 2,
+		RC = 4
 	}
 }
