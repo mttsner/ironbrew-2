@@ -12,9 +12,14 @@ namespace IronBrew2.Obfuscator.Opcodes
 			@"
 local A = Inst[OP_A];
 local T = Stk[A];
-for Idx = A + 1, A + Inst[OP_B] do 
+for Idx = A + 1, Inst[OP_B] do 
 	Insert(T, Stk[Idx])
 end;";
+
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A;
+		}
 	}
 	
 	public class OpSetListB0 : VOpcode
@@ -41,13 +46,13 @@ end;";
 InstrPoint = InstrPoint + 1
 local A = Inst[OP_A];
 local T = Stk[A];
-for Idx = A + 1, A + Inst[OP_B] do 
+for Idx = A + 1, Inst[OP_B] do 
 	Insert(T, Stk[Idx])
 end;";
 
 		public override void Mutate(Instruction instruction)
 		{
-			instruction.B = instruction.Chunk.Instructions[instruction.PC + 1].Data;
+			instruction.B = instruction.A + instruction.Chunk.Instructions[instruction.PC + 1].Data;
 			instruction.InstructionType = InstructionType.ABx;
 		}
 	}

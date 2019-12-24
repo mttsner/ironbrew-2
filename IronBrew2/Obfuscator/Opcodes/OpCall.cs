@@ -12,13 +12,19 @@ namespace IronBrew2.Obfuscator.Opcodes
 		public override string GetObfuscated(ObfuscationContext context) =>
 			@"
 local A = Inst[OP_A]
-local Results = { Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1)) };
+local Results = { Stk[A](Unpack(Stk, A + 1, Inst[OP_B])) };
 local Edx = 0;
-for Idx = A, A + Inst[OP_C] - 2 do 
+for Idx = A, Inst[OP_C] do 
 	Edx = Edx + 1;
 	Stk[Idx] = Results[Edx];
 end
 ";
+
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A - 1;
+			instruction.C += instruction.A - 2;
+		}
 	}
 	
 	public class OpCallB2 : VOpcode
@@ -32,11 +38,15 @@ end
 local A = Inst[OP_A]
 local Results = { Stk[A](Stk[A + 1]) };
 local Edx = 0;
-for Idx = A, A + Inst[OP_C] - 2 do 
+for Idx = A, Inst[OP_C] do 
 	Edx = Edx + 1;
 	Stk[Idx] = Results[Edx];
 end
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.C += instruction.A - 2;
+		}
 	}
 	
 	public class OpCallB0 : VOpcode
@@ -50,11 +60,15 @@ end
 local A = Inst[OP_A]
 local Results = { Stk[A](Unpack(Stk, A + 1, Top)) };
 local Edx = 0;
-for Idx = A, A + Inst[OP_C] - 2 do 
+for Idx = A, Inst[OP_C] do 
 	Edx = Edx + 1;
 	Stk[Idx] = Results[Edx];
 end
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.C += instruction.A - 2;
+		}
 	}
 
 	public class OpCallB1 : VOpcode
@@ -67,13 +81,17 @@ end
 			@"
 local A = Inst[OP_A]
 local Results = { Stk[A]() };
-local Limit = A + Inst[OP_C] - 2;
+local Limit = Inst[OP_C];
 local Edx = 0;
 for Idx = A, Limit do 
 	Edx = Edx + 1;
 	Stk[Idx] = Results[Edx];
 end
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.C += instruction.A - 2;
+		}
 	}
 	
 	public class OpCallC0 : VOpcode
@@ -85,7 +103,7 @@ end
 		public override string GetObfuscated(ObfuscationContext context) =>
 			@"
 local A = Inst[OP_A]
-local Results, Limit = _R(Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1)))
+local Results, Limit = _R(Stk[A](Unpack(Stk, A + 1, Inst[OP_B])))
 Top = Limit + A - 1
 local Edx = 0;
 for Idx = A, Top do 
@@ -93,6 +111,10 @@ for Idx = A, Top do
 	Stk[Idx] = Results[Edx];
 end;
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A - 1;
+		}
 	}
 	
 	public class OpCallC0B2 : VOpcode
@@ -112,6 +134,10 @@ for Idx = A, Top do
 	Stk[Idx] = Results[Edx];
 end;
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A - 1;
+		}
 	}
 	
 	public class OpCallC1 : VOpcode
@@ -123,8 +149,12 @@ end;
 		public override string GetObfuscated(ObfuscationContext context) =>
 			@"
 local A = Inst[OP_A]
-Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1))
+Stk[A](Unpack(Stk, A + 1, Inst[OP_B]))
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A - 1;
+		}
 	}
 	
 	public class OpCallC1B2 : VOpcode
@@ -210,8 +240,12 @@ end;
 		public override string GetObfuscated(ObfuscationContext context) =>
 			@"
 local A = Inst[OP_A]
-Stk[A] = Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1)) 
+Stk[A] = Stk[A](Unpack(Stk, A + 1, Inst[OP_B])) 
 ";
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A - 1;
+		}
 	}
 	
 	public class OpCallC2B2 : VOpcode

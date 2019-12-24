@@ -11,7 +11,12 @@ namespace IronBrew2.Obfuscator.Opcodes
 		public override string GetObfuscated(ObfuscationContext context) =>
 			@"
 local A = Inst[OP_A];
-do return Stk[A](Unpack(Stk, A + 1, A + Inst[OP_B] - 1)) end;";
+do return Stk[A](Unpack(Stk, A + 1, Inst[OP_B])) end;";
+
+		public override void Mutate(Instruction instruction)
+		{
+			instruction.B += instruction.A - 1;
+		}
 	}
 	
 	public class OpTailCallB0 : VOpcode
