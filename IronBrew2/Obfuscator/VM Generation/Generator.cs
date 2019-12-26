@@ -421,7 +421,7 @@ local GetFEnv      = getfenv or function() return _ENV end;
 local Setmetatable = setmetatable;
 local Select       = select;
 
-local Unpack = unpack;
+local Unpack = unpack or table.unpack;
 local ToNumber = tonumber;";
 
 			if (settings.BytecodeCompress)
