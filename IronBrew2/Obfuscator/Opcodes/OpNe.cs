@@ -63,7 +63,7 @@ namespace IronBrew2.Obfuscator.Opcodes
 			instruction.OpCode == Opcode.Eq && instruction.A != 0 && instruction.B > 255 && instruction.C > 255;
 
 		public override string GetObfuscated(ObfuscationContext context) =>
-			"if(Inst[OP_A]] ~= Inst[OP_C])then InstrPoint=InstrPoint+1;else InstrPoint=Inst[OP_B];end;";
+			"if(Inst[OP_A] ~= Inst[OP_C])then InstrPoint=InstrPoint+1;else InstrPoint=Inst[OP_B];end;";
 	
 		public override void Mutate(Instruction instruction)
 		{
